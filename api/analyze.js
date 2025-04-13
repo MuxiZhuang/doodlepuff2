@@ -9,12 +9,12 @@ export default async function handler(req, res) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "gpt-4-vision-preview",
+        model: "gpt-4-turbo",
         messages: [
           {
             role: "user",
             content: [
-              { type: "text", text: "This is a child's drawing. Please respond with a JSON containing: type, description, personality of the creature." },
+              { type: "text", text: "This is a child's drawing. Please respond with a JSON containing three fields: type (the kind of creature), description (what it looks like), and personality (its behavior or mood)." },
               { type: "image_url", image_url: { url: image } }
             ]
           }
@@ -24,9 +24,8 @@ export default async function handler(req, res) {
     });
 
     const data = await openaiRes.json();
-    console.log('OpenAI raw response:', JSON.stringify(data, null, 2));
-
     const reply = data.choices?.[0]?.message?.content;
+
     if (!reply) {
       return res.status(500).json({ result: "No reply content received from OpenAI." });
     }
@@ -38,3 +37,4 @@ export default async function handler(req, res) {
     res.status(500).json({ result: "Error during GPT call." });
   }
 }
+
